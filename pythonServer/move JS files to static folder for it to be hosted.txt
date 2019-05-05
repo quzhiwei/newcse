@@ -1,0 +1,1 @@
+move JS files to static folder for it to be hosted
