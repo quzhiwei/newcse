@@ -1,14 +1,26 @@
 
-
+// updowvalue = 400
+// leftrightvalue = 800
 function Blob(x, y, r) {
   this.pos = createVector(x, y);
   this.r = r;
   this.vel = createVector(0, 0);
+  var updowvalue = 400
+  var leftrightvalue = 800
+  this.keyPressed = function(event) {
+  if (event.keyPressed === "w") {
+    leftrightvalue = width+100
+  } else if (event.keyPressed === RIGHT_ARROW) {
+    leftrightvalue = width-50;
+  }else if(event.keyPressed === ArrowUp){
+    updowvalue = height+50
+  }else if(event.keyPressed === DOWN_ARROW){
+    updowvalue = height-50
+  }
+}
+  this.update = function(event) {
 
-  this.update = function() {
-    var vec = createVector(mouseX - width / 2, mouseY - height / 2);
-    // vec.div(50);
-    //vec.setMag(3);
+    var vec = createVector(leftrightvalue - width / 2, updowvalue - height / 2);
     vec.limit(3);
     this.vel.lerp(vec, 1);
     this.pos.add(this.vel);
@@ -30,10 +42,7 @@ function Blob(x, y, r) {
       this.y = random(-3000,3000)
       this.r = 24
       }
-      // var sum = PI * this.r * this.r + PI * other.r * other.r;
-      // this.r = sqrt(sum / PI);
-      //this.r += other.r;
-      // return true;
+
     } else {
       return false;
     }
@@ -62,6 +71,15 @@ function Small_Food(x, y, r) {
 }
 
 function Big_Food(x, y, r) {
+  this.pos = createVector(x, y);
+  this.r = r;
+  this.vel = createVector(0, 0);
+  this.show = function() {
+    fill(random(100,200),random(100,200),random(100,200));
+    ellipse(this.pos.x, this.pos.y, this.r * 2, this.r * 2);
+  }
+}
+function hugefood(x, y, r) {
   this.pos = createVector(x, y);
   this.r = r;
   this.vel = createVector(0, 0);

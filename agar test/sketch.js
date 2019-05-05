@@ -1,7 +1,7 @@
 
 
 var player;
-var players = []
+var players = [];
 var sfood
 var sfoods = [];
 var bfood
@@ -9,7 +9,8 @@ var bfoods = [];
 var zoom = 1;
 var spikes = [];
 var spike
-
+var hugefood
+var hugefoods = [];
 
 function setup() {
   createCanvas(1600, 800);
@@ -34,6 +35,9 @@ function setup() {
     var y1= random(-2500,2500);
     var size1= random(24,64);
     spikes[u] = new Spike(x1,y1,size1);
+  }
+  for (var y = 0; y<1; y++){
+    hugefoods[y] = new hugefood(100,100,50)
   }
 
 }
@@ -62,9 +66,14 @@ function draw() {
     if (player.eats(bfoods[o])) {
 
       bfoods[o] = new Big_Food(random(-2500,2500), random(-2500,2500),random(6,9))
-
     }
+  }
+  for (var y= hugefoods.length-1; y >=0; y--) {
+    hugefoods[y].show();
+    if (player.eats(hugefoods[y])) {
 
+      hugefoods[y] = new hugefood(random(-2500,2500), random(-2500,2500),50)
+    }
   }
   for (var u = spikes.length-1; u >=0; u--) {
     spikes[u].show();
