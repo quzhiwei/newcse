@@ -21,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/quzhiwei/newcse/issues"
   },
-  "homepage": "https://github.com/quzhiwei/newcse#readme"
+  "homepage": "https://github.com/quzhiwei/newcse#readme",
+  "dependencies": {
+    "p5": "^0.8.0",
+    "phaser": "^3.16.2"
+  }
 }

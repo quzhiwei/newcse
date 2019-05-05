@@ -1,30 +1,20 @@
 
-// updowvalue = 400
-// leftrightvalue = 800
+var updownvalue = 400
+var leftrightvalue = 800
+
 function Blob(x, y, r) {
   this.pos = createVector(x, y);
   this.r = r;
   this.vel = createVector(0, 0);
-  var updowvalue = 400
-  var leftrightvalue = 800
-  this.keyPressed = function(event) {
-  if (event.keyPressed === "w") {
-    leftrightvalue = width+100
-  } else if (event.keyPressed === RIGHT_ARROW) {
-    leftrightvalue = width-50;
-  }else if(event.keyPressed === ArrowUp){
-    updowvalue = height+50
-  }else if(event.keyPressed === DOWN_ARROW){
-    updowvalue = height-50
-  }
-}
+
+
   this.update = function(event) {
 
-    var vec = createVector(leftrightvalue - width / 2, updowvalue - height / 2);
+    var vec = createVector(leftrightvalue - width / 2, updownvalue - height / 2);
     vec.limit(3);
     this.vel.lerp(vec, 1);
     this.pos.add(this.vel);
-  }
+  };
   
   this.eats = function(other) {
     var d = p5.Vector.dist(this.pos, other.pos);
@@ -37,21 +27,21 @@ function Blob(x, y, r) {
       if(this.r < other.r){
         var sum = PI * this.r * this.r + PI * other.r * other.r;
       other.r = sqrt(sum / PI);
-      return true
       this.x = random(-3000,3000)
       this.y = random(-3000,3000)
       this.r = 24
+      return true
       }
 
     } else {
       return false;
     }
-  }
+  };
 
   this.constrain = function() {
     blob.pos.x = constrain(blob.pos.x, -width / 4, width / 4);
     blob.pos.y = constrain(blob.pos.y, -height / 4, height / 4);
-  }
+  };
 
   this.show = function() {
     fill(61,226,245);
@@ -127,5 +117,20 @@ function Spike(x, y, r) {
     } else {
       return false;
     }
+  }
+}
+
+function keyPressed() {
+  if(keyCode === UP_ARROW){
+    updownvalue = height + 50
+  }
+  if(keyCode === LEFT_ARROW){
+    leftrightvalue = width - 50
+  }
+  if(keyCode === RIGHT_ARROW){
+    leftrightvalue = width + 50
+  }
+  if(keyCode === DOWN_ARROW){
+    updownvalue = height - 50
   }
 }
