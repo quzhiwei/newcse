@@ -1,0 +1,25 @@
+{
+  "name": "newcse",
+  "version": "1.0.0",
+  "description": "agario desktop app",
+  "main": "agar test/index.html",
+  "window": {
+    "title": "Agario Clone",
+    "width": 1920,
+    "height": 1080,
+    "toolbar": false
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quzhiwei/newcse.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quzhiwei/newcse/issues"
+  },
+  "homepage": "https://github.com/quzhiwei/newcse#readme"
+}
