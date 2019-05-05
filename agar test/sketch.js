@@ -54,27 +54,17 @@ function draw() {
     sfoods[i].show();
     if (player.eats(sfoods[i])) {
       sfoods[i] = new Small_Food(random(-2500,2500), random(-2500,2500),random(2,6))
-      // player = new Blob(0, 0, 24);
+
     }
   }
   for (var o= bfoods.length-1; o >=0; o--) {
     bfoods[o].show();
     if (player.eats(bfoods[o])) {
-      // bfoods.splice(o, 1);
-      // bfoods.push(new Big_Food(0,0,24))
+
       bfoods[o] = new Big_Food(random(-2500,2500), random(-2500,2500),random(6,9))
-      // bfoods.push(new bfood(random(-100,100),random(-100,100),random(6,9)))
-      // bfood.
-      // player = new Blob(0, 0, 24);
+
     }
-    // if(o<=500){
-  //   for (var o <= 500; o < 1000; o++) {
-  //   var x2 = random(-2500,2500);
-  //   var y2 = random(-2500,2500);
-  //   var size2 = random(6,9)
-  //   bfoods[o] = new Big_Food(x2, y2, size2);
-  // }
-    // }
+
   }
   for (var u = spikes.length-1; u >=0; u--) {
     spikes[u].show();
@@ -82,10 +72,7 @@ function draw() {
       player = new Blob(random(-1500,1500),random(-1500,1500), 24);
     }
   }
-//   for (var p = players.length-1; p>= 0){
-//     players[p].show();
-//     players[p].update();
-// }
+
 
   player.show();
   player.update();
