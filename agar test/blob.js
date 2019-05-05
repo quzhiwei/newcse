@@ -6,11 +6,11 @@ function Blob(x, y, r) {
   this.vel = createVector(0, 0);
 
   this.update = function() {
-    var newvel = createVector(mouseX - width / 2, mouseY - height / 2);
-    newvel.div(50);
-    //newvel.setMag(3);
-    newvel.limit(3);
-    this.vel.lerp(newvel, 0.2);
+    var vec = createVector(mouseX - width / 2, mouseY - height / 2);
+    // vec.div(50);
+    //vec.setMag(3);
+    vec.limit(3);
+    this.vel.lerp(vec, 1);
     this.pos.add(this.vel);
   }
   
@@ -20,15 +20,20 @@ function Blob(x, y, r) {
       if(this.r > other.r){
         var sum = PI * this.r * this.r + PI * other.r * other.r;
       this.r = sqrt(sum / PI);
+      return true
       }
       if(this.r < other.r){
         var sum = PI * this.r * this.r + PI * other.r * other.r;
       other.r = sqrt(sum / PI);
+      return true
+      this.x = random(-3000,3000)
+      this.y = random(-3000,3000)
+      this.r = 24
       }
       // var sum = PI * this.r * this.r + PI * other.r * other.r;
       // this.r = sqrt(sum / PI);
       //this.r += other.r;
-      return true;
+      // return true;
     } else {
       return false;
     }
@@ -40,7 +45,7 @@ function Blob(x, y, r) {
   }
 
   this.show = function() {
-    fill(255);
+    fill(61,226,245);
     ellipse(this.pos.x, this.pos.y, this.r * 2, this.r * 2);
   }
 }
@@ -51,7 +56,7 @@ function Small_Food(x, y, r) {
   this.r = r;
   this.vel = createVector(0, 0);
   this.show = function() {
-    fill(random(100,200),random(100,200),random(100,200));
+    fill(random(100,200),random(130,255),random(100,200));
     ellipse(this.pos.x, this.pos.y, this.r * 2, this.r * 2);
   }
 }
@@ -71,7 +76,7 @@ function Spike(x, y, r) {
   this.r = r;
   this.vel = createVector(0, 0);
   this.show = function() {
-    fill(255,0,0);
+    fill(34,34,34);
     ellipse(this.pos.x, this.pos.y, this.r * 2, this.r * 2);
   }
     // this.destory = function(other){
