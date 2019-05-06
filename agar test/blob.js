@@ -69,6 +69,8 @@ function Big_Food(x, y, r) {
     ellipse(this.pos.x, this.pos.y, this.r * 2, this.r * 2);
   }
 }
+
+/*
 function hugefood(x, y, r) {
   this.pos = createVector(x, y);
   this.r = r;
@@ -78,6 +80,7 @@ function hugefood(x, y, r) {
     ellipse(this.pos.x, this.pos.y, this.r * 2, this.r * 2);
   }
 }
+*/
 
 function Spike(x, y, r) {
   this.pos = createVector(x, y);
