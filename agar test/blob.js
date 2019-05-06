@@ -133,4 +133,8 @@ function keyPressed() {
   if(keyCode === DOWN_ARROW){
     updownvalue = height / 2 + 50
   }
+  if(keyCode === SHIFT){
+    updownvalue = height/2
+    leftrightvalue = width/2
+  }
 }
