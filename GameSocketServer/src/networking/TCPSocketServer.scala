@@ -1,78 +1,74 @@
 package networking
 
 import java.net.InetSocketAddress
-import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
+
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.io.{IO, Tcp}
 import akka.util.ByteString
 import play.api.libs.json.{JsValue, Json}
-import java.net.InetSocketAddress
 
-case object UpdateGames
 
-case object AutoSave
-
-case class GameState(gameState: String)
-
-class GameServer extends Actor {
+class TCPSocketServer(gameActor: ActorRef) extends Actor {
 
   import Tcp._
   import context.system
 
   IO(Tcp) ! Bind(self, new InetSocketAddress("localhost", 8000))
-  var clients: Set[ActorRef] = Set()
-  var gameSessions: Map[String, ActorRef] = Map()
 
-
-  def generate_objects(): Unit = {}
-
+  var webServers: Set[ActorRef] = Set()
+  var buffer: String = ""
+  val delimiter: String = "~"
 
   override def receive: Receive = {
-
-    //    Example of adding an actor with this actor as its supervisor
-    //    Note that we use the context of this actor and do not create a new actor system
-    //    val childActor = context.actorOf(Props(classOf[GameActor], username))
-
     case b: Bound => println("Listening on port: " + b.localAddress.getPort)
 
     case c: Connected =>
       println("Client Connected: " + c.remoteAddress)
-      this.clients = this.clients + sender()
+      this.webServers = this.webServers + sender()
       sender() ! Register(self)
 
     case PeerClosed =>
       println("Client Disconnected: " + sender())
-      this.clients = this.clients - sender()
+      this.webServers = this.webServers - sender()
 
     case r: Received =>
-      println("Received: " + r.data.utf8String)
-      val parsed: JsValue = Json.parse(r.data.utf8String)
-      val name = (parsed \ "username").as[String]
-      val action = (parsed \ "action").as[String]
-
-      if (action == "connected") {
-        val session = context.actorOf(Props(classOf[GameActor], name))
-        session ! Setup
-        this.gameSessions = this.gameSessions + (name -> session) // sender() or session?
-      }
-      if (action == "disconnected") {
-        val session = gameSessions(name)
-        this.gameSessions = this.gameSessions - name
-        session ! PoisonPill
+      buffer += r.data.utf8String
+      while (buffer.contains(delimiter)) {
+        val curr = buffer.substring(0, buffer.indexOf(delimiter))
+        buffer = buffer.substring(buffer.indexOf(delimiter) + 1)
+        handleMessageFromWebServer(curr)
       }
 
-    case UpdateGames => this.gameSessions.values.foreach((client: ActorRef) => client !  Update)
-
-    case AutoSave => this.gameSessions.values.foreach((client: ActorRef) => client !  Save)
+    case SendGameState =>
+      gameActor ! SendGameState
 
     case gs: GameState =>
-      val delimiter = "~"
-      val msg: String = gs.gameState + delimiter
-      this.clients.foreach((client: ActorRef) => client !  Write(ByteString(msg)))
+      this.webServers.foreach((client: ActorRef) => client ! Write(ByteString(gs.gameState + delimiter)))
+
   }
+
+
+  def handleMessageFromWebServer(messageString:String):Unit = {
+    val message: JsValue = Json.parse(messageString)
+    val username = (message \ "username").as[String]
+    val messageType = (message \ "action").as[String]
+
+    messageType match {
+      case "connected" => gameActor ! AddPlayer(username)
+      case "disconnected" => gameActor ! RemovePlayer(username)
+      case "move" =>
+        val x = (message \ "x").as[Double]
+        val y = (message \ "y").as[Double]
+        gameActor ! MovePlayer(username, x, y)
+      case "stop" => gameActor ! StopPlayer(username)
+      case "show" => gameActor ! Show(username)
+    }
+  }
+
 }
 
 
-object ClickerServer {
+object TCPSocketServer {
 
   def main(args: Array[String]): Unit = {
     val actorSystem = ActorSystem()
@@ -80,9 +76,11 @@ object ClickerServer {
     import actorSystem.dispatcher
     import scala.concurrent.duration._
 
-    val server = actorSystem.actorOf(Props(classOf[GameServer]))
+    val gameActor = actorSystem.actorOf(Props(classOf[GameActor]))
+    val server = actorSystem.actorOf(Props(classOf[TCPSocketServer], gameActor))
 
-    actorSystem.scheduler.schedule(0 milliseconds, 100 milliseconds, server, UpdateGames)
-    actorSystem.scheduler.schedule(0 milliseconds, 5000 milliseconds, server, AutoSave)
+    actorSystem.scheduler.schedule(16.milliseconds, 32.milliseconds, gameActor, UpdateGame)
+    actorSystem.scheduler.schedule(32.milliseconds, 32.milliseconds, server, SendGameState)
   }
+
 }
