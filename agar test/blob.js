@@ -122,15 +122,15 @@ function Spike(x, y, r) {
 
 function keyPressed() {
   if(keyCode === UP_ARROW){
-    updownvalue = height + 50
+    updownvalue = height / 2 - 50
   }
   if(keyCode === LEFT_ARROW){
-    leftrightvalue = width - 50
+    leftrightvalue = width / 2 - 50
   }
   if(keyCode === RIGHT_ARROW){
-    leftrightvalue = width + 50
+    leftrightvalue = width / 2 + 50
   }
   if(keyCode === DOWN_ARROW){
-    updownvalue = height - 50
+    updownvalue = height / 2 + 50
   }
 }
