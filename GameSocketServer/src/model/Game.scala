@@ -24,7 +24,7 @@ class Game {
 
 
   def addPlayer(id: String): Unit = {
-    val player = new Blob(startingVector(), new Vector(0, 0))
+    val player = new Blob(new Vector(Random.nextDouble() * 3000 - 1500, Random.nextDouble() * 3000 - 1500), new Vector(0, 0))
     players += (id -> player)
     world = player :: world
   }
@@ -36,66 +36,62 @@ class Game {
   }
 
 
-  def placeFoodB(x: Int, y: Int): Unit = {
-    val big_food = new Food_b(x, y)
-    food_b = big_food :: food_b
-    world = big_food :: world
+  def placeFoodB(amount: Int): Unit = {
+    for (i <- 0 to amount) {
+      val big_food = new Food_b
+      food_b = big_food :: food_b
+      world = big_food :: world
+    }
   }
 
 
-  def placeFoodS(x: Int, y: Int): Unit = {
-    val small_food = new Food_b(x, y)
-    food_b = small_food :: food_b
-    world = small_food :: world
-  }
-
-
-  def placeFoodS(x: Int, y: Int): Unit = {
-    food_s = new Food_s(x, y) :: food_s
-  }
-
-
-  def startingVector(): Vector = {
-    val x = Random.nextInt(5000) - 2500
-    val y = Random.nextInt(5000) - 2500
-    new Vector(level.startingLocation.x + 0.5, level.startingLocation.y + 0.5)
+  def placeFoodS(amount: Int): Unit = {
+    for (i <- 0 to amount) {
+      val small_food = new Food_b
+      food_b = small_food :: food_b
+      world = small_food :: world
+    }
   }
 
 
   def update(): Unit = {
     val time: Long = System.nanoTime()
     val dt = (time - this.lastUpdateTime) / 1000000000.0
-    Physics.updateWorld(this.world, dt)
     checkForPlayerHits()
-    projectiles = projectiles.filter(po => !po.destroyed)
     this.lastUpdateTime = time
   }
 
   def gameState(): String = {
     val gameState: Map[String, JsValue] = Map(
-      "walls" -> Json.toJson(this.walls.map({ w => Json.toJson(Map("x" -> w.x, "y" -> w.y)) })),
-      "towers" -> Json.toJson(this.towers.map({ t => Json.toJson(Map("x" -> t.x, "y" -> t.y)) })),
       "players" -> Json.toJson(this.players.map({ case (k, v) => Json.toJson(Map(
         "x" -> Json.toJson(v.location.x),
         "y" -> Json.toJson(v.location.y),
-        "v_x" -> Json.toJson(v.velocity.x),
-        "v_y" -> Json.toJson(v.velocity.y),
+        "v_x" -> Json.toJson(v.Velocity.x),
+        "v_y" -> Json.toJson(v.Velocity.y),
+        "size" -> Json.toJson(v.size),
         "id" -> Json.toJson(k))) })),
-      "projectiles" -> Json.toJson(this.projectiles.map({ po => Json.toJson(Map("x" -> po.location.x, "y" -> po.location.y)) }))
+      "food" -> Json.toJson(this.food_s.map({ po => Json.toJson(Map("x" -> po.location.x, "y" -> po.location.y)) }))
     )
 
     Json.stringify(Json.toJson(gameState))
   }
 
 
+  def distance (obj1: Object, obj2: Object): Double = {
+    val x1 = obj1.location.x
+    val y1 = obj1.location.y
+    val x2 = obj2.location.x
+    val y2 = obj2.location.y
+    math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
+  }
+
   def checkForPlayerHits(): Unit = {
-    // TODO: Objective 3
     for (player <- players.values) {
-      for (projectile <- projectiles) {
-        val distance = player.location.distance2d(projectile.location)
-        if (distance <= playerSize) {
-          projectile.destroy()
-          player.location = startingVector()
+      for (food <- food_b) {
+        val dis = distance(player, food)
+        if (dis <= player.size + food.size) {
+          food.destroy()
+          player.size += food.size
         }
       }
     }

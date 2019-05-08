@@ -1,6 +1,8 @@
 package model
 
-class Food_s(x: Int, y: Int) extends Object {
+import scala.util.Random
+
+class Food_s extends Object(new Vector(Random.nextDouble() * 5000 - 2500, Random.nextDouble() * 3000 - 2500)) {
 
   var size: Double = 2
 

@@ -1,6 +1,6 @@
 package model
 
-class Object {
+class Object(var location: Vector) {
 
   var destroyed: Boolean = false
 

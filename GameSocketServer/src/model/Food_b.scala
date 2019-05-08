@@ -1,8 +1,10 @@
 package model
 
-class Food_b(x: Int, y: Int) extends Object {
+import scala.util.Random
 
-  var size: Double = 2
+class Food_b extends Object(new Vector(Random.nextDouble() * 5000 - 2500, Random.nextDouble() * 3000 - 2500)) {
+
+  var size: Double = 4
 
   override def collide(): Unit = {
     this.destroy()
